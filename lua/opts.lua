@@ -1,5 +1,7 @@
 -- [[ opts.lua ]]
 local opt = vim.opt
+local cmd = vim.api.nvim_command
+local api = vim.api
 
 -- [[ Context ]]
 opt.colorcolumn = '80'
@@ -16,6 +18,7 @@ opt.fileencoding = 'utf8'
 opt.syntax = 'ON'
 opt.termguicolors = true
 opt.cursorline = true
+cmd('colorscheme onedark')
 
 -- [[ Search ]]
 opt.ignorecase = true
@@ -33,3 +36,30 @@ opt.smartindent = true
 -- [[ Splits ]]
 opt.splitright = true
 opt.splitbelow = true
+
+opt.completeopt = {'menu', 'menuone', 'noselect'}
+
+opt.foldmethod = "expr"
+opt.foldexpr = "nvim_treesitter#foldexpr()"
+
+local M = {}
+
+function M.nvim_create_augroups(definitions)
+  for group_name, definition in pairs(definitions) do
+    cmd('augroup '..group_name)
+    cmd('autocmd!')
+    for _, def in ipairs(definition) do
+      local command = table.concat(vim.tbl_flatten{'autocmd', def}, ' ')
+      cmd(command)
+    end
+    cmd('augroup END')
+  end
+end
+
+local autoCommands = {
+  -- other autocommands
+  open_folds = {
+    {"BufAdd,BufEnter,BufNew,BufNewFile,BufWinEnter,BufReadPost,FileReadPost", "*", "normal zR"}
+  }
+}
+M.nvim_create_augroups(autoCommands)
