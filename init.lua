@@ -1,8 +1,8 @@
 --[[ init.lua ]]
 
 -- LEADER
-vim.g.mapleader = ' '
-vim.g.localleader = ' '
+--vim.g.mapleader = ''
+-- vim.g.localleader = '\\'
 
 require('vars')
 require('plug')
@@ -39,5 +39,5 @@ require('nvim-treesitter.configs').setup {
 
 require('lsp_config')
 require('cmp_config')
-require('rust-tools')
+--require('rust-tools')
 

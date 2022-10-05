@@ -11,6 +11,12 @@ local lsp_defaults = {
 }
 
 local lspconfig = require('lspconfig')
+lspconfig.util.default_config = vim.tbl_deep_extend(
+  'force',
+  lspconfig.util.default_config,
+  lsp_defaults
+)
+local rt = require('rust-tools')
 
 local opts = {
   tools = { --rust-tools options
@@ -167,6 +173,12 @@ local opts = {
     -- standalone file support
     -- setting it to false may improve startup time
     standalone = true,
+    on_attach = function(_, bufnr)
+      -- Hover hover_actions
+      vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr})
+      -- Code action groups
+      vim.keymap.set('n', '<Leader>a', rt.code_action_group.code_action_group, { buffer = bufnr })
+    end,
   }, -- rust-analyzer options
 
   -- debugging stuff
@@ -179,5 +191,16 @@ local opts = {
   },
 }
 
+lspconfig.sumneko_lua.setup {
+  settings = {
+    Lua = {
+      runtime = {
+        version = "Lua 5.1"
+      }
+    }
+  }
+}
+lspconfig.clangd.setup{}
 require('rust-tools').setup(opts)
-require'lspconfig'.clangd.setup{}
+--require'lspconfig'.clangd.setup{}
+
